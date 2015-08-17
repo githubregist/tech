@@ -1,0 +1,49 @@
+package com.test;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import com.app.QRCodeGenerator;
+
+public class TestQrCode {
+
+	public static void main(String[] args) throws Exception {
+		
+		draw("The BufferedImage subclass describes a");
+//		draw("1h");
+		
+	}
+
+	public static void draw(String message) throws Exception {
+		int[][] pixels = QRCodeGenerator.generateQr(message);
+		int width = pixels.length;
+		int height = width;
+		int[] b = new int[width * height];
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (pixels[x][y] > 0) {
+					b[y * height + x] = 0xff000000;
+				} else {
+					b[y * height + x] = 0xffffffff;
+				}
+			}
+		}
+		printImage(b, pixels.length);
+	}
+
+	public static void printImage(int b[], int width) {
+		int height = width;
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		image.setRGB(0, 0, width, height, b, 0, width);// 设置RGB
+		File outFile = new File("D:\\out.JPG");
+		try {
+			ImageIO.write(image, "png", outFile);// 写图片
+		} catch (IOException e) {
+		}
+	}
+
+}
+
