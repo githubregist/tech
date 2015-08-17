@@ -1,4 +1,3 @@
-
 package com.test;
 
 import java.util.ArrayList;
@@ -83,42 +82,47 @@ public class TestChess {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
 				int chances = 0;
-				if (!"1".equals(game[i][j]) && !"0".equals(game[i][j])) {
+				if ("1".equals(game[i][j]) || "0".equals(game[i][j])) {
+					continue;
+				}
 					
-					Point chancesPoint = null;
-					
-					// 试落子
-					game[i][j] = isWhite ? "1" : "0";
+				Point chancesPoint = null;
 				
-					// 判断我方是否将赢
-					List<Line> myLines = getLine(isWhite ? "1" : "0", 4);
-					if (myLines != null && !myLines.isEmpty()) {
-						for (Line line : myLines) {
-							List<Point> nextPoints = line.getConnectedPoint();
-							for (Point nextPoint : nextPoints) {
-								int x = nextPoint.x;
-								int y = nextPoint.y;
-								if (x >= 0 && x < 10 && y >= 0 && y < 10) {
-									if (!"1".equals(game[x][y]) && !"0".equals(game[x][y])) {
-										if (chancesPoint == null || chancesPoint != null && chancesPoint.x != x && chancesPoint.y != y) {
-											chances++;
-										}
-										if (chancesPoint == null) {
-											chancesPoint = new Point(x, y, "");
-										}
-										if (chances > 1) {
-											System.out.println("第一步(行" + (i+1) + ",列" + (j+1) + "),第二步(行" + (x+1) + ",列" + (y+1) + ")可赢!");
-										}
-									}
-								}
+				// 试落子
+				game[i][j] = isWhite ? "1" : "0";
+			
+				// 判断我方是否将赢
+				List<Line> myLines = getLine(isWhite ? "1" : "0", 4);
+				if (myLines != null && !myLines.isEmpty()) {
+					for (Line line : myLines) {
+						List<Point> nextPoints = line.getConnectedPoint();
+						for (Point nextPoint : nextPoints) {
+							int x = nextPoint.x;
+							int y = nextPoint.y;
+							if (x < 0 || x >= 10 || y < 0 || y >= 10) {
+								continue;
+							}
+							if ("1".equals(game[x][y]) || "0".equals(game[x][y])) {
+								continue;
+							}
+							if (chancesPoint == null || chancesPoint != null 
+									&& chancesPoint.x != x && chancesPoint.y != y) {
+								chances++;
+							}
+							if (chancesPoint == null) {
+								chancesPoint = new Point(x, y, "");
+							}
+							if (chances > 1) {
+								System.out.println("第一步(行" + (i+1) + ",列" + (j+1) + ")," +
+										"第二步(行" + (x+1) + ",列" + (y+1) + ")可赢!");
 							}
 						}
 					}
-					game[i][j] = " ";
-					if (chances > 1) {
-						isWin = true;
-						System.out.println("YES!");
-					}
+				}
+				game[i][j] = " ";
+				if (chances > 1) {
+					isWin = true;
+					System.out.println("YES!");
 				}
 			}
 		}
@@ -144,7 +148,8 @@ public class TestChess {
 						if (step_i + step_j < 0) {
 							continue;
 						}
-						if (i + step_i * 4 < 0 || i + step_i * 4 >= 10 || j + step_j * 4 < 0 || j + step_j * 4 >= 10) {
+						if (i + step_i * 4 < 0 || i + step_i * 4 >= 10 
+								|| j + step_j * 4 < 0 || j + step_j * 4 >= 10) {
 							continue;
 						}
 						int matchCount = 0;
@@ -160,10 +165,14 @@ public class TestChess {
 						if (matchCount == 3 && blankCount == 1) {
 							Line line = new Line();
 							line.points.add(new Point(i, j, game[i][j]));
-							line.points.add(new Point(i + step_i * 1, j + step_j * 1, game[i + step_i * 1][j + step_j * 1]));
-							line.points.add(new Point(i + step_i * 2, j + step_j * 2, game[i + step_i * 2][j + step_j * 2]));
-							line.points.add(new Point(i + step_i * 3, j + step_j * 3, game[i + step_i * 3][j + step_j * 3]));
-							line.points.add(new Point(i + step_i * 4, j + step_j * 4, game[i + step_i * 4][j + step_j * 4]));
+							line.points.add(new Point(i + step_i * 1, j + step_j * 1, 
+									game[i + step_i * 1][j + step_j * 1]));
+							line.points.add(new Point(i + step_i * 2, j + step_j * 2, 
+									game[i + step_i * 2][j + step_j * 2]));
+							line.points.add(new Point(i + step_i * 3, j + step_j * 3, 
+									game[i + step_i * 3][j + step_j * 3]));
+							line.points.add(new Point(i + step_i * 4, j + step_j * 4, 
+									game[i + step_i * 4][j + step_j * 4]));
 							lines.add(line);
 						}
 					}
